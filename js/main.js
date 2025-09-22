@@ -62,5 +62,3 @@ for (let i = 1; i <= PHOTOS_COUNT; i++) {
     comments: generateComments(getRandomInteger(0, 30))
   });
 }
-
-console.log(photos);
