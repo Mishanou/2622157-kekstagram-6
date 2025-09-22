@@ -8,4 +8,3 @@ function checkPalindrome(string) {
 function getNumberFromString(input) {
   const digits = String(input).replace(/\D/g, '');
   return digits ? Number(digits) : NaN;
-}
