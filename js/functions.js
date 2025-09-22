@@ -1,23 +1,11 @@
-function checkLength (string, length) {
-  return string.length <= length;
-}
+const checkLength = (string, maxLength) => string.length <= maxLength;
 
-function checkPolyndrom (string) {
-  string.replaceAll(' ', '');
-  const reversed = string.split('').reverse().join('');
-  return reversed === string;
+function checkPalindrome(string) {
+  const cleanString = string.replaceAll(' ', '').toLowerCase();
+  return cleanString === cleanString.split('').reverse().join('');
 }
 
 function getNumberFromString(input) {
-  const str = String(input);
-  let result = '';
-
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    if (!isNaN(parseInt(char, 10))) {
-      result += char;
-    }
-  }
-
-  return result ? parseInt(result, 10) : NaN;
+  const digits = String(input).replace(/\D/g, '');
+  return digits ? Number(digits) : NaN;
 }
