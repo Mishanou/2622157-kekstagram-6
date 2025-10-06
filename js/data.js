@@ -1,4 +1,4 @@
-import { getRandomInteger, getRandomArrayElement } from "./utils";
+import { getRandomInteger, getRandomArrayElement } from './utils';
 
 const NAMES = [
   'User',
@@ -68,6 +68,6 @@ const generatePhotos = (count) => {
   }
 
   return photos;
-}
+};
 
 export {generatePhotos};
