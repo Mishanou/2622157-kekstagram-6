@@ -1,32 +1,5 @@
-import { getRandomInteger, getRandomArrayElement } from './utils';
-
-const NAMES = [
-  'User',
-  'Dude',
-  'Torontotokyo',
-  'Jesus',
-  'CJ',
-  'Mr.Robot',
-  'Anonymous',
-  'Travis Scott'
-];
-
-const DESCRIPTIONS = [
-  'Прекрасный день для фото',
-  'Захватывающий момент',
-  'Невероятные эмоции',
-  'Памятное событие',
-  'Великолепный пейзаж'
-];
-
-const MESSAGES = [
-  'Всё отлично!',
-  'В целом всё неплохо. Но не всё.',
-  'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
-  'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
-  'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
-  'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
-];
+import { getRandomInteger, getRandomArrayElement } from './utils.js';
+import { NAMES, DESCRIPTIONS, MESSAGES } from './consts.js';
 
 const generateMessage = () => {
   const count = getRandomInteger(1, 2);
@@ -70,4 +43,4 @@ const generatePhotos = (count) => {
   return photos;
 };
 
-export {generatePhotos};
+export { generatePhotos };

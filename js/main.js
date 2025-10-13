@@ -1,4 +1,4 @@
-import { generatePhotos } from './data';
+import { generatePhotos } from './data.js';
 
 const PHOTOS_COUNT = 25;
 
