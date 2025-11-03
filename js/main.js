@@ -1,5 +1,3 @@
-import { generatePhotos } from './data.js';
+import { drawThumbnails } from './thumbnails.js';
 
-const PHOTOS_COUNT = 25;
-
-generatePhotos(PHOTOS_COUNT);
+drawThumbnails();
