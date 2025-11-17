@@ -1,6 +1,8 @@
 import { getRandomInteger, getRandomArrayElement } from './utils.js';
 import { NAMES, DESCRIPTIONS, MESSAGES } from './consts.js';
 
+const PHOTOS_COUNT = 25;
+
 const generateMessage = () => {
   const count = getRandomInteger(1, 2);
   const selectedMessages = [];
@@ -27,10 +29,10 @@ const generateComments = (count) => {
   return comments;
 };
 
-const generatePhotos = (count) => {
+const generatePhotos = () => {
   const photos = [];
 
-  for (let i = 1; i <= count; i++) {
+  for (let i = 1; i <= PHOTOS_COUNT; i++) {
     photos.push({
       id: crypto.randomUUID(),
       url: `photos/${i}.jpg`,
