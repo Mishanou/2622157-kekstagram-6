@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм»
 
 * Студент: [Михаил Новокшонов](https://up.htmlacademy.ru/univer-js1/6/user/2622157).
-* Наставник: [Владимир Вавщик](https://htmlacademy.ru/profile/id1610171).
+* Наставник: [Владимир Шишлянников](https://htmlacademy.ru/profile/id1082173).
 
 ---
 
