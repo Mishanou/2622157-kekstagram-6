@@ -1,5 +1,5 @@
 import { drawThumbnails } from './thumbnails.js';
-import { initImageUpload } from './upload-form.js';
+import { initFormHandler } from './form-handler.js';
 
 drawThumbnails();
-initImageUpload();
+initFormHandler();
