@@ -1,16 +1,20 @@
-import { validateHashtags, validateComment, MAX_COMMENT_LENGTH } from './form-validation.js';
+import { validateHashtagFormat, validateHashtagUniqueness, validateHashtagCount, validateComment, MAX_COMMENT_LENGTH, MAX_HASHTAGS } from './form-validation.js';
 import { initScale, resetScale } from './scale.js';
 import { initEffects, resetEffects } from './effects.js';
-import { isEscKey } from './utils.js';
+import { sendData } from './api.js';
+import { showSuccessMessage, showErrorMessage } from './messages.js';
+import { closeForm } from './form-modal.js';
 
-const body = document.querySelector('body');
 const form = document.querySelector('#upload-select-image');
-const uploadInput = form.querySelector('#upload-file');
 const overlay = form.querySelector('.img-upload__overlay');
-const closeButton = overlay.querySelector('#upload-cancel');
+const submitButton = form.querySelector('#upload-submit');
 const hashtagInput = overlay.querySelector('.text__hashtags');
 const commentInput = overlay.querySelector('.text__description');
-const submitButton = overlay.querySelector('#upload-submit');
+
+const SubmitButtonText = {
+  IDLE: 'Опубликовать',
+  SENDING: 'Публикую...'
+};
 
 let pristine = null;
 
@@ -24,88 +28,71 @@ const createPristine = () => {
     errorTextClass: 'img-upload__error'
   });
 
-  pristine.addValidator(
-    hashtagInput,
-    validateHashtags,
-    'Хэштеги должны начинаться с #, содержать только буквы и цифры (максимум 19 символов), быть уникальными (не более 5 хэштегов)',
-    2,
-    true
-  );
-
-  pristine.addValidator(
-    commentInput,
-    validateComment,
-    `Длина комментария не должна превышать ${MAX_COMMENT_LENGTH} символов`,
-    2,
-    true
-  );
+  pristine.addValidator(hashtagInput, validateHashtagFormat, 'Хэштеги должны содержать только буквы/цифры, не больше 19 символов', 1, true);
+  pristine.addValidator(hashtagInput, validateHashtagUniqueness, 'Хэштеги должны быть уникальными (регистр не учитывается)', 2, true);
+  pristine.addValidator(hashtagInput, validateHashtagCount, `Не более ${MAX_HASHTAGS} хэштегов`, 3, true);
+  pristine.addValidator(commentInput, validateComment, `Длина комментария не должна превышать ${MAX_COMMENT_LENGTH} символов`, 1, true);
 };
 
-const updateSubmitButton = () => {
-  if (pristine) {
-    const isValid = pristine.validate();
-    submitButton.disabled = !isValid;
-  }
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = SubmitButtonText.SENDING;
 };
 
-const onDocumentKeydown = (evt) => {
-  if (isEscKey(evt) && (evt.target !== hashtagInput && evt.target !== commentInput)) {
-    evt.preventDefault();
-    closeForm();
-  }
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = SubmitButtonText.IDLE;
 };
 
-const openForm = () => {
-  overlay.classList.remove('hidden');
-  body.classList.add('modal-open');
-
-  createPristine();
-  updateSubmitButton();
-  initScale();
-  initEffects();
-
-  document.addEventListener('keydown', onDocumentKeydown);
-  hashtagInput.addEventListener('input', updateSubmitButton);
-  commentInput.addEventListener('input', updateSubmitButton);
-};
-
-function closeForm () {
-  overlay.classList.add('hidden');
-  body.classList.remove('modal-open');
-
-  form.reset();
-  uploadInput.value = '';
-  hashtagInput.value = '';
-  commentInput.value = '';
+const resetForm = () => {
   resetScale();
   resetEffects();
-
-  document.removeEventListener('keydown', onDocumentKeydown);
-  hashtagInput.removeEventListener('input', updateSubmitButton);
-  commentInput.removeEventListener('input', updateSubmitButton);
-
+  hashtagInput.value = '';
+  commentInput.value = '';
   if (pristine) {
     pristine.destroy();
     pristine = null;
   }
-}
+  form.querySelector('#upload-file').value = '';
+  const imagePreview = document.querySelector('.img-upload__preview img');
+  imagePreview.src = 'img/upload-default-image.jpg';
+  imagePreview.alt = 'Предварительный просмотр фотографии';
+};
 
 const initFormHandler = () => {
-  uploadInput.addEventListener('change', openForm);
-
-  closeButton.addEventListener('click', (evt) => {
-    evt.preventDefault();
-    closeForm();
+  overlay.addEventListener('open', () => {
+    createPristine();
+    initScale();
+    initEffects();
   });
 
-  form.addEventListener('submit', (evt) => {
-    if (!pristine || !pristine.validate()) {
-      evt.preventDefault();
+  overlay.addEventListener('close', resetForm);
 
-      if (pristine) {
-        pristine.validate(true);
-      }
+  form.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    const isValid = pristine.validate();
+    if (isValid) {
+      blockSubmitButton();
+      const formData = new FormData(form);
+
+      sendData(formData)
+        .then(() => {
+          closeForm();
+          showSuccessMessage();
+        })
+        .catch(() => {
+          showErrorMessage('Не удалось отправить форму. Попробуйте ещё раз');
+        })
+        .finally(() => {
+          unblockSubmitButton();
+        });
     }
+  });
+
+  form.addEventListener('reset', () => {
+    resetForm();
+    closeForm();
   });
 };
 

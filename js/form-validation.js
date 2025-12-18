@@ -2,35 +2,31 @@ const HASHTAG_REGEX = /^#[a-zа-яё0-9]{1,19}$/i;
 const MAX_HASHTAGS = 5;
 const MAX_COMMENT_LENGTH = 140;
 
-const validateHashtags = (value) => {
+const validateHashtagFormat = (value) => {
   if (value.trim() === '') {
     return true;
   }
-
   const hashtags = value.trim().split(/\s+/).filter((tag) => tag !== '');
+  return hashtags.every((hashtag) => HASHTAG_REGEX.test(hashtag));
+};
 
-  if (hashtags.length > MAX_HASHTAGS) {
-    return false;
+const validateHashtagUniqueness = (value) => {
+  if (value.trim() === '') {
+    return true;
   }
+  const hashtags = value.trim().split(/\s+/).filter((tag) => tag !== '');
+  const lowerHashtags = hashtags.map((tag) => tag.toLowerCase());
+  return new Set(lowerHashtags).size === lowerHashtags.length;
+};
 
-  const seenHashtags = new Set();
-
-  for (const hashtag of hashtags) {
-    if (!HASHTAG_REGEX.test(hashtag)) {
-      return false;
-    }
-
-    const lowerHashtag = hashtag.toLowerCase();
-    if (seenHashtags.has(lowerHashtag)) {
-      return false;
-    }
-
-    seenHashtags.add(lowerHashtag);
+const validateHashtagCount = (value) => {
+  if (value.trim() === '') {
+    return true;
   }
-
-  return true;
+  const hashtags = value.trim().split(/\s+/).filter((tag) => tag !== '');
+  return hashtags.length <= MAX_HASHTAGS;
 };
 
 const validateComment = (value) => value.length <= MAX_COMMENT_LENGTH;
 
-export { validateHashtags, validateComment, MAX_COMMENT_LENGTH };
+export { validateHashtagFormat, validateHashtagUniqueness, validateHashtagCount, validateComment, MAX_COMMENT_LENGTH, MAX_HASHTAGS };
