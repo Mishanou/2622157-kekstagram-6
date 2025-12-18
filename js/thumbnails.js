@@ -1,8 +1,6 @@
-import { generatePhotos } from './data.js';
 import { openPhoto } from './full-screen-photo.js';
 
-const drawThumbnails = () => {
-  const photos = generatePhotos();
+const drawThumbnails = (photos) => {
   const pictureTemplate = document.querySelector('#picture').content;
   const photosList = document.querySelector('.pictures');
   const fragment = document.createDocumentFragment();
