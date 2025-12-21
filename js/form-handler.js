@@ -5,11 +5,14 @@ import { sendData } from './api.js';
 import { showSuccessMessage, showErrorMessage } from './messages.js';
 import { closeForm } from './form-modal.js';
 
+const FILE_TYPES = ['jpg', 'jpeg', 'png'];
+
 const form = document.querySelector('#upload-select-image');
 const overlay = form.querySelector('.img-upload__overlay');
 const submitButton = form.querySelector('#upload-submit');
 const hashtagInput = overlay.querySelector('.text__hashtags');
 const commentInput = overlay.querySelector('.text__description');
+const imagePreview = document.querySelector('.img-upload__preview img');
 
 const SubmitButtonText = {
   IDLE: 'Опубликовать',
@@ -54,12 +57,27 @@ const resetForm = () => {
     pristine = null;
   }
   form.querySelector('#upload-file').value = '';
-  const imagePreview = document.querySelector('.img-upload__preview img');
   imagePreview.src = 'img/upload-default-image.jpg';
-  imagePreview.alt = 'Предварительный просмотр фотографии';
+};
+
+const setPhoto = () => {
+  const fileChooser = document.querySelector('#upload-file');
+
+  fileChooser.addEventListener('change', () => {
+    const file = fileChooser.files[0];
+    const fileName = file.name.toLowerCase();
+
+    const isMatch = FILE_TYPES.some((it) => fileName.endsWith(it));
+
+    if (isMatch) {
+      imagePreview.src = URL.createObjectURL(file);
+    }
+  });
 };
 
 const initFormHandler = () => {
+  setPhoto();
+
   overlay.addEventListener('open', () => {
     createPristine();
     initScale();
