@@ -6,6 +6,23 @@ const getRandomInteger = (min, max) => {
 
 const getRandomArrayElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
 
+function getRandomElements(arr, count) {
+  if (arr.length <= count) {
+    return [...arr];
+  }
+
+  const result = new Set();
+
+  while (result.size < count) {
+    const randomElement = getRandomArrayElement(arr);
+    result.add(randomElement);
+  }
+
+  return [...result];
+}
+
+const comparePhotosByComments = (firstPhoto, secondPhoto) => secondPhoto.comments.length - firstPhoto.comments.length;
+
 const isEscKey = (evt) => evt.key === 'Escape';
 
 const ALERT_SHOW_TIME = 5000;
@@ -31,4 +48,14 @@ const showAlert = (message) => {
   }, ALERT_SHOW_TIME);
 };
 
-export { getRandomInteger, getRandomArrayElement, isEscKey, showAlert };
+function debounce (callback, timeoutDelay = 500) {
+  let timeoutId;
+
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+}
+
+
+export { getRandomElements, comparePhotosByComments, isEscKey, showAlert, debounce };
