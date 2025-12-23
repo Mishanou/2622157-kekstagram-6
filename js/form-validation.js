@@ -3,28 +3,18 @@ const MAX_HASHTAGS = 5;
 const MAX_COMMENT_LENGTH = 140;
 
 const validateHashtagFormat = (value) => {
-  if (value.trim() === '') {
-    return true;
-  }
   const hashtags = value.trim().split(/\s+/).filter((tag) => tag !== '');
-  return hashtags.every((hashtag) => HASHTAG_REGEX.test(hashtag));
+  return !hashtags.length || hashtags.every((hashtag) => HASHTAG_REGEX.test(hashtag));
 };
 
 const validateHashtagUniqueness = (value) => {
-  if (value.trim() === '') {
-    return true;
-  }
   const hashtags = value.trim().split(/\s+/).filter((tag) => tag !== '');
-  const lowerHashtags = hashtags.map((tag) => tag.toLowerCase());
-  return new Set(lowerHashtags).size === lowerHashtags.length;
+  return !hashtags.length || new Set(hashtags.map((tag) => tag.toLowerCase())).size === hashtags.length;
 };
 
 const validateHashtagCount = (value) => {
-  if (value.trim() === '') {
-    return true;
-  }
   const hashtags = value.trim().split(/\s+/).filter((tag) => tag !== '');
-  return hashtags.length <= MAX_HASHTAGS;
+  return !hashtags.length || hashtags.length <= MAX_HASHTAGS;
 };
 
 const validateComment = (value) => value.length <= MAX_COMMENT_LENGTH;

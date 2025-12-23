@@ -11,8 +11,8 @@ let scaleControlField, smallerButton, biggerButton, scaleValue, image;
 const updateUI = () => {
   scaleValue.value = `${currentScale}%`;
   image.style.transform = `scale(${currentScale * 0.01})`;
-  smallerButton.disabled = currentScale === SCALE_CONFIG.MIN;
-  biggerButton.disabled = currentScale === SCALE_CONFIG.MAX;
+  smallerButton.disabled = currentScale <= SCALE_CONFIG.MIN;
+  biggerButton.disabled = currentScale >= SCALE_CONFIG.MAX;
 };
 
 const changeScale = (step) => {

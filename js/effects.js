@@ -1,4 +1,5 @@
 import { EFFECTS } from './consts.js';
+import { toggleHidden } from './utils.js';
 
 let currentEffect = EFFECTS.none;
 let sliderContainer, sliderElement, effectLevelValue, imagePreview;
@@ -37,14 +38,6 @@ const applyEffectToImage = (value) => {
   }
 };
 
-const showSlider = () => {
-  sliderContainer.classList.remove('hidden');
-};
-
-const hideSlider = () => {
-  sliderContainer.classList.add('hidden');
-};
-
 const initEffects = () => {
   sliderContainer = document.querySelector('.img-upload__effect-level');
   sliderElement = document.querySelector('.effect-level__slider');
@@ -52,7 +45,7 @@ const initEffects = () => {
   imagePreview = document.querySelector('.img-upload__preview img');
   const effectsList = document.querySelector('.effects__list');
 
-  hideSlider();
+  toggleHidden(sliderContainer, true);
 
   noUiSlider.create(sliderElement, {
     range: {
@@ -83,13 +76,14 @@ function changeEffect (effect) {
   imagePreview.classList.add(`effects__preview--${effect.name}`);
 
   if (effect.name === 'none') {
-    hideSlider();
+    toggleHidden(sliderContainer, true);
     resetImageFilter();
-  } else {
-    updateSliderOptions(effect);
-    showSlider();
-    sliderElement.noUiSlider.set(effect.max);
+    return;
   }
+
+  updateSliderOptions(effect);
+  toggleHidden(sliderContainer, false);
+  sliderElement.noUiSlider.set(effect.max);
 }
 
 const resetEffects = () => {
@@ -99,6 +93,9 @@ const resetEffects = () => {
   }
   changeEffect(EFFECTS.none);
   resetImageFilter();
+  if (sliderElement.noUiSlider) {
+    sliderElement.noUiSlider.destroy();
+  }
 };
 
 export { initEffects, resetEffects };

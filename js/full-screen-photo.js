@@ -16,7 +16,7 @@ function closePhoto() {
   bigPicture.classList.add('hidden');
   document.body.classList.remove('modal-open');
   document.removeEventListener('keydown', onEscKeyDown);
-
+  commentsLoader.removeEventListener('click', onCommentsLoaderClick);
   currentComments = [];
   commentsShown = 0;
 }
