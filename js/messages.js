@@ -2,36 +2,35 @@ import { isEscKey } from './utils.js';
 
 const body = document.querySelector('body');
 const MESSAGE_Z_INDEX = 1000;
-
-const getMessageTemplate = (id) => {
-  const template = document.querySelector(id);
-  return template.content.cloneNode(true);
-};
-
-const onEscKeydown = (evt) => {
-  if (isEscKey(evt)) {
-    evt.preventDefault();
-    closeMessage();
-  }
-};
-
-const onOverlayClick = (evt) => {
-  if (evt.target.closest('.success__inner') || evt.target.closest('.error__inner')) {
-    return;
-  }
-  closeMessage();
-};
-
 let currentMessage = null;
 
-function closeMessage () {
+const closeMessage = () => {
   if (currentMessage) {
     currentMessage.remove();
     currentMessage = null;
     document.removeEventListener('keydown', onEscKeydown);
     document.removeEventListener('click', onOverlayClick);
   }
+};
+
+function onEscKeydown(evt) {
+  if (isEscKey(evt)) {
+    evt.preventDefault();
+    closeMessage();
+  }
 }
+
+function onOverlayClick(evt) {
+  if (evt.target.closest('.success__inner') || evt.target.closest('.error__inner')) {
+    return;
+  }
+  closeMessage();
+}
+
+const getMessageTemplate = (id) => {
+  const template = document.querySelector(id);
+  return template.content.cloneNode(true);
+};
 
 const showSuccessMessage = () => {
   const successMessage = getMessageTemplate('#success');

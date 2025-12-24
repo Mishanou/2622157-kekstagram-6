@@ -12,23 +12,7 @@ let currentComments = [];
 let commentsShown = 0;
 const COMMENTS_PER_STEP = 5;
 
-function closePhoto() {
-  bigPicture.classList.add('hidden');
-  document.body.classList.remove('modal-open');
-  document.removeEventListener('keydown', onEscKeyDown);
-  commentsLoader.removeEventListener('click', onCommentsLoaderClick);
-  currentComments = [];
-  commentsShown = 0;
-}
-
-function onEscKeyDown(evt) {
-  if (evt.key === 'Escape') {
-    evt.preventDefault();
-    closePhoto();
-  }
-}
-
-function createComment(comment) {
+const createComment = (comment) => {
   const commentElement = document.createElement('li');
   commentElement.classList.add('social__comment');
 
@@ -38,9 +22,9 @@ function createComment(comment) {
   `;
 
   return commentElement;
-}
+};
 
-function renderComments() {
+const renderComments = () => {
   const commentsToShow = currentComments.slice(commentsShown, commentsShown + COMMENTS_PER_STEP);
 
   commentsToShow.forEach((comment) => {
@@ -58,13 +42,25 @@ function renderComments() {
   } else {
     commentsLoader.classList.remove('hidden');
   }
+};
+
+const closePhoto = () => {
+  bigPicture.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+  document.removeEventListener('keydown', onEscKeyDown);
+  commentsLoader.removeEventListener('click', renderComments);
+  currentComments = [];
+  commentsShown = 0;
+};
+
+function onEscKeyDown(evt) {
+  if (evt.key === 'Escape') {
+    evt.preventDefault();
+    closePhoto();
+  }
 }
 
-function onCommentsLoaderClick() {
-  renderComments();
-}
-
-function openPhoto(photo) {
+const openPhoto = (photo) => {
   image.src = photo.url;
   image.alt = photo.description;
   likes.textContent = photo.likes;
@@ -86,7 +82,7 @@ function openPhoto(photo) {
 
   document.addEventListener('keydown', onEscKeyDown);
   closeButton.addEventListener('click', closePhoto, { once: true });
-  commentsLoader.addEventListener('click', onCommentsLoaderClick);
-}
+  commentsLoader.addEventListener('click', renderComments);
+};
 
 export { openPhoto };

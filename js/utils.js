@@ -57,7 +57,4 @@ function debounce (callback, timeoutDelay = 500) {
   };
 }
 
-const toggleHidden = (element, isHidden) => element.classList.toggle('hidden', isHidden);
-
-
-export { getRandomElements, comparePhotosByComments, isEscKey, showAlert, debounce, toggleHidden };
+export { getRandomElements, comparePhotosByComments, isEscKey, showAlert, debounce };

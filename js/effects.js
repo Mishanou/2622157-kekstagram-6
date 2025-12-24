@@ -1,15 +1,7 @@
 import { EFFECTS } from './consts.js';
-import { toggleHidden } from './utils.js';
 
 let currentEffect = EFFECTS.none;
 let sliderContainer, sliderElement, effectLevelValue, imagePreview;
-
-const onEffectChange = (evt) => {
-  if (evt.target.name === 'effect') {
-    const selectedEffect = EFFECTS[evt.target.value];
-    changeEffect(selectedEffect);
-  }
-};
 
 const updateSliderOptions = (effect) => {
   sliderElement.noUiSlider.updateOptions({
@@ -38,6 +30,36 @@ const applyEffectToImage = (value) => {
   }
 };
 
+const showSlider = () => {
+  sliderContainer.classList.remove('hidden');
+};
+
+const hideSlider = () => {
+  sliderContainer.classList.add('hidden');
+};
+
+const changeEffect = (effect) => {
+  currentEffect = effect;
+  imagePreview.className = '';
+  imagePreview.classList.add(`effects__preview--${effect.name}`);
+
+  if (effect.name === 'none') {
+    hideSlider();
+    resetImageFilter();
+    return;
+  }
+  updateSliderOptions(effect);
+  showSlider();
+  sliderElement.noUiSlider.set(effect.max);
+};
+
+const onEffectsListChange = (evt) => {
+  if (evt.target.name === 'effect') {
+    const selectedEffect = EFFECTS[evt.target.value];
+    changeEffect(selectedEffect);
+  }
+};
+
 const initEffects = () => {
   sliderContainer = document.querySelector('.img-upload__effect-level');
   sliderElement = document.querySelector('.effect-level__slider');
@@ -45,7 +67,7 @@ const initEffects = () => {
   imagePreview = document.querySelector('.img-upload__preview img');
   const effectsList = document.querySelector('.effects__list');
 
-  toggleHidden(sliderContainer, true);
+  hideSlider();
 
   noUiSlider.create(sliderElement, {
     range: {
@@ -67,24 +89,8 @@ const initEffects = () => {
     applyEffectToImage(sliderValue);
   });
 
-  effectsList.addEventListener('change', onEffectChange);
+  effectsList.addEventListener('change', onEffectsListChange);
 };
-
-function changeEffect (effect) {
-  currentEffect = effect;
-  imagePreview.className = '';
-  imagePreview.classList.add(`effects__preview--${effect.name}`);
-
-  if (effect.name === 'none') {
-    toggleHidden(sliderContainer, true);
-    resetImageFilter();
-    return;
-  }
-
-  updateSliderOptions(effect);
-  toggleHidden(sliderContainer, false);
-  sliderElement.noUiSlider.set(effect.max);
-}
 
 const resetEffects = () => {
   const originalEffectRadio = document.querySelector('#effect-none');
@@ -93,7 +99,8 @@ const resetEffects = () => {
   }
   changeEffect(EFFECTS.none);
   resetImageFilter();
-  if (sliderElement.noUiSlider) {
+
+  if (sliderElement && sliderElement.noUiSlider) {
     sliderElement.noUiSlider.destroy();
   }
 };
